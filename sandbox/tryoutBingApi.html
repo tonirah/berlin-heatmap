@@ -46,7 +46,7 @@
                     numberOfResults = 0;
                 }
 
-                $('pre').html(numberOfResults);
+                $('span').html(numberOfResults);
                 // $('pre').html(JSON.stringify(data, undefined, 2));
             })
             .fail(function() {
@@ -54,6 +54,9 @@
             });
     });
 </script>
+<h1>Bing Search for "Kreuzberg"</h1>
+<p>Expected number of results: 4680000 (2019-06-05)</p>
+<p>Returned number of results: <span></span></p>
 <pre></pre>
 </body>
 </html>
