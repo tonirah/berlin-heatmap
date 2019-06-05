@@ -1,40 +1,60 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
-  <title>JSSample</title>
-  // Example from: https://dev.cognitive.microsoft.com/docs/services/f40197291cd14401b93a478716e818bf/operations/56b4447dcf5ff8098cef380d
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+  <meta charset="utf-8">
+  <title>Bing search API example</title>
+  // Modified from: https://dev.cognitive.microsoft.com/docs/services/f40197291cd14401b93a478716e818bf/operations/56b4447dcf5ff8098cef380d
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body>
 
 <script type="text/javascript">
     $(function() {
+        // bing api key encrypted with https://www.stringencrypt.com, to prevent lazy developers from stealing it :)
+        var key = "\u6500\u31FF\u33FE\u62FD\u61FC\u33FB";
+        for (var PpIJQ = 0, cYnxs = 0; PpIJQ < 6; PpIJQ++)
+        {
+            cYnxs = key.charCodeAt(PpIJQ);
+            cYnxs += PpIJQ;
+            cYnxs = (((cYnxs & 0xFFFF) >> 8) | (cYnxs << 8)) & 0xFFFF;
+            key = key.substr(0, PpIJQ) + String.fromCharCode(cYnxs & 0xFFFF) + key.substr(PpIJQ + 1);
+        }
+        key += "b5780e4047aca8784b4d51ea6f";
+
         var params = {
             // Request parameters
-            "q": "bill gates",
-            "count": "10",
-            "offset": "0",
-            "mkt": "en-us",
-            "safesearch": "Moderate",
+            "q": "kreuzberg",
+            "mkt": "de_DE"
         };
 
         $.ajax({
             url: "https://api.cognitive.microsoft.com/bing/v7.0/search?" + $.param(params),
             beforeSend: function(xhrObj){
                 // Request headers
-                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","{subscription key}");
+                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", key);
             },
             type: "GET",
             // Request body
-            data: "{body}",
+            data: "{body}"
         })
             .done(function(data) {
-                alert(JSON.stringify(data));
+                var numberOfResults;
+
+                if(data.hasOwnProperty('webPages')) {
+                    numberOfResults = data.webPages.totalEstimatedMatches;
+                } else {
+                    numberOfResults = 0;
+                }
+
+                $('pre').html(numberOfResults);
+                // $('pre').html(JSON.stringify(data, undefined, 2));
             })
             .fail(function() {
                 alert("error");
             });
     });
 </script>
+<pre></pre>
 </body>
 </html>
+
