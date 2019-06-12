@@ -1,0 +1,14 @@
+body {
+    background: red;
+}
+
+button {
+    margin: 50px;
+}
+
+/* Map */
+#mapId {
+    height: 400px;
+    width: 600px;
+    background: green;
+}
