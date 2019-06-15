@@ -1,4 +1,4 @@
-define(["jquery"], function ($) {
+define(["jquery", "app/helpers", "app/districts"], function ($, helpers, districts) {
 
     function encryptKey() {
         // bing api key encrypted with https://www.stringencrypt.com, to prevent lazy developers from stealing it :)
@@ -14,14 +14,16 @@ define(["jquery"], function ($) {
         return key;
     }
 
-    function simpleQuery(query, result) {
+    function simpleQuery(query, district) {
         var key = encryptKey();
+        var jointQuery = query + " " + district;
+        // Modified from: https://dev.cognitive.microsoft.com/docs/services/f40197291cd14401b93a478716e818bf/operations/56b4447dcf5ff8098cef380d
         var params = {
             // Request parameters
-            "q": "Kreuzberg",
+            "q": jointQuery,
             "mkt": "de_DE"
         };
-        $.ajax({
+        return $.ajax({
             url: "https://api.cognitive.microsoft.com/bing/v7.0/search?" + $.param(params),
             beforeSend: function(xhrObj){
                 // Request headers
@@ -30,27 +32,58 @@ define(["jquery"], function ($) {
             type: "GET",
             // Request body
             data: "{body}"
-        })
-            .done(function(data) {
-                var numberOfResults;
+        });
+    }
 
-                if(data.hasOwnProperty('webPages')) {
-                    numberOfResults = data.webPages.totalEstimatedMatches;
-                } else {
-                    numberOfResults = 0;
-                }
-                console.log(numberOfResults);
+    function arrayQuery(query, resultsObject) {
+        // Make jQ deferred object (promise), that is resolved when # of responses is equal to number of districts searched for
+        var promisedResults = $.Deferred();
+        var responseCounter = 0;
 
-                result.push(numberOfResults);
+        // Bing API allows only 3 requests per ~1 second
+        var splittedArray = helpers.chunkArray(districts.arrayOfDistricts, 3);
+        var time = 1500;
 
-                console.log("Result in callback: "+ result);
-            })
-            .fail(function() {
-                result.push("no data received")
-            });
+        // Weird workaround, since JS doesn't have a sleep function. Source: Somewhere on Stackoverflow.
+        for (var i = 0; i < splittedArray.length; i++) {
+            (function (i) {
+                setTimeout(function () {
+
+                    // Search query for each district
+                    splittedArray[i].forEach(function (district) {
+                        simpleQuery(query, district).done(function (data) {
+                            handleAPIResponse(data, district, resultsObject);
+                            responseCounter++;
+
+                            // Resolve promise after last response
+                            if (responseCounter === districts.arrayOfDistricts.length) {
+                                console.log("ALL REQUESTS DONE!");
+                                promisedResults.resolve();
+                            }
+                        })
+                    })
+                }, time * i);
+            })(i);
+        }
+
+        return promisedResults.promise();
+
+    }
+
+    function handleAPIResponse(data, district, resultsObject) {
+        var numberOfResults;
+
+        if(data.hasOwnProperty('webPages')) {
+            numberOfResults = data.webPages.totalEstimatedMatches;
+        } else {
+            numberOfResults = 0
+        }
+        resultsObject[district] = numberOfResults;
+
+        console.log(".");
     }
 
     return {
-        simpleQuery: simpleQuery
+        arrayQuery: arrayQuery
     }
 });

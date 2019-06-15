@@ -1,13 +1,11 @@
-define(["app/map", "app/bootstrapTest", "app/search"], function (map, bootstrap, search) {
-    map.initialize();
-    bootstrap();
+define(["app/map", "app/search", "app/helpers"], function (map, search, helpers) {
+    // map.initialize();
 
-    var result = ["abc"];
-    search.simpleQuery("Kreuzberg", result);
+    var resultsObject = helpers.buildResultsObject();
 
-    console.log("Unmittelbar in main: "+ result);
-
-    setTimeout(function(){
-        console.log("Nach 3s in main: " + result);
-    }, 3000);
+    var promisedResults = search.arrayQuery("Sojamilch", resultsObject);
+    promisedResults.done(function () {
+        console.log("MAIN: Promise resolved! resultsObject: ");
+        console.log(resultsObject);
+    })
 });
