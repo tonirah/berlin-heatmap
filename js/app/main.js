@@ -1,11 +1,29 @@
-define(["app/map", "app/search", "app/helpers"], function (map, search, helpers) {
+define(["bootstrap", "app/map", "app/search", "app/helpers"], function (bootstrap, map, search, helpers) {
     // map.initialize();
 
     var resultsObject = helpers.buildResultsObject();
 
-    var promisedResults = search.arrayQuery("Sojamilch", resultsObject);
-    promisedResults.done(function () {
-        console.log("MAIN: Promise resolved! resultsObject: ");
-        console.log(resultsObject);
-    })
+    var searchButton = document.querySelector("#submit");
+    searchButton.addEventListener("click", newRequest, false);
+
+    var status = document.querySelector("#status");
+    var results = document.querySelector("#results");
+
+    function newRequest() {
+        var query = document.querySelector("#query").value;
+        if (query === "") {
+            // TODO
+            // Alert, "please enter a search term"
+            return false;
+        }
+
+        status.innerHTML = "Loading, please wait....";
+        results.innerHTML = "";
+
+        var promisedResults = search.arrayQuery(query, resultsObject);
+        promisedResults.done(function () {
+            results.innerHTML = JSON.stringify(resultsObject, undefined, 2);
+            status.innerHTML = "";
+        });
+    }
 });

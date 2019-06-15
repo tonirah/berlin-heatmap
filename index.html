@@ -9,6 +9,7 @@
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
         integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
         crossorigin="">
@@ -17,14 +18,25 @@
 
 <body>
 
-<p>jQuery: </p>
+<nav class="navbar navbar-light navbar-expand bg-light">
+  <form class="form-inline mx-auto">
+    <div class="input-group">
+      <input id="query" class="form-control py-2" type="search" placeholder="search">
+      <div class="input-group-append">
+        <button id="submit" class="btn btn-outline-success" type="button">
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+    </div>
+  </form>
+</nav>
 
-<button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top"
-        title="Popper.js and Bootstrap.js work!">
-  Bootstrap button
-</button>
+<h3>Results</h3>
+<pre id="results"></pre>
+<h4 id="status"></h4>
+<!--<div id="mapId"></div>-->
 
-<div id="mapId"></div>
+
 
 <!-- data-main attribute tells require.js to load js/app.js after require.js loads. -->
 <script data-main="js/app" src="js/lib/require.js"></script>

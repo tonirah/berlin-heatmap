@@ -80,7 +80,7 @@ define(["jquery", "app/helpers", "app/districts"], function ($, helpers, distric
         }
         resultsObject[district] = numberOfResults;
 
-        console.log(".");
+        console.log(data);
     }
 
     return {
