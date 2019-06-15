@@ -1,10 +1,11 @@
-define(["bootstrap", "app/map", "app/search", "app/helpers"], function (bootstrap, map, search, helpers) {
+define(["app/map", "app/search", "app/helpers"], function (map, search, helpers) {
     // map.initialize();
 
     var resultsObject = helpers.buildResultsObject();
 
     var searchButton = document.querySelector("#submit");
     searchButton.addEventListener("click", newRequest, false);
+    helpers.fixEnterBehaviour(newRequest);
 
     var status = document.querySelector("#status");
     var results = document.querySelector("#results");

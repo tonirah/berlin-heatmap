@@ -23,8 +23,16 @@ define(["app/districts"], function (districts) {
         return resultsObject;
     }
 
+    function fixEnterBehaviour(newRequest) {
+        $('#searchBar').submit(function (evt) {
+            evt.preventDefault();
+            newRequest();
+        });
+    }
+
     return {
         chunkArray: chunkArray,
-        buildResultsObject: buildResultsObject
+        buildResultsObject: buildResultsObject,
+        fixEnterBehaviour: fixEnterBehaviour
     }
 });
