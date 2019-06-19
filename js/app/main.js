@@ -1,15 +1,15 @@
 define(["app/map", "app/search", "app/helpers"], function (map, search, helpers) {
-    map.initialize();
+    // map.initialize();
 
     var searchButton = document.querySelector("#submit");
     var status = document.querySelector("#status");
     var results = document.querySelector("#results");
 
-    searchButton.addEventListener("click", newRequest, false);
-    helpers.fixEnterBehaviour(newRequest);
-
+    var responsesObject = helpers.buildResponsesObject();
     var resultsObject = helpers.buildResultsObject();
 
+    searchButton.addEventListener("click", newRequest, false);
+    helpers.fixEnterBehaviour(newRequest);
 
     function newRequest() {
         var query = document.querySelector("#query").value;
@@ -22,8 +22,10 @@ define(["app/map", "app/search", "app/helpers"], function (map, search, helpers)
         status.innerHTML = "Loading, please wait....";
         results.innerHTML = "";
 
-        var promisedResults = search.arrayQuery(query, resultsObject);
-        promisedResults.done(function () {
+        var promisedResponses = search.arrayQuery(query, responsesObject);
+        promisedResponses.done(function () {
+            helpers.fillResultsObject(responsesObject, resultsObject);
+
             results.innerHTML = JSON.stringify(resultsObject, undefined, 2);
             status.innerHTML = "";
         });
