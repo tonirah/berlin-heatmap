@@ -25,7 +25,28 @@ define(["leaflet", "app/districts"], function (L, districts) {
         }).addTo(mymap);
     }
 
+    function calculateRelativeRelevance(resultsObject) {
+        var relativeRelevanceObject = {};
+        // Get min, max and span min-max value from # of results
+        // https://stackoverflow.com/a/11142934
+        var min = Infinity, max = -Infinity;
+        for(var d in resultsObject) {
+            if( resultsObject[d] < min) min = resultsObject[d];
+            if( resultsObject[d] > max) max = resultsObject[d];
+        }
+        var span = max - min;
+
+        // Iterate over resultsObject, normalize
+        for (var district in resultsObject) {
+            var number = (resultsObject[district] - min) / span;
+            relativeRelevanceObject[district] = parseFloat(number.toFixed(2));
+        }
+
+        return relativeRelevanceObject;
+    }
+
     return {
-        initialize: initialize
+        initialize: initialize,
+        calculateRelativeRelevance: calculateRelativeRelevance
     }
 });
