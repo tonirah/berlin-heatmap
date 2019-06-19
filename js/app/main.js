@@ -1,14 +1,15 @@
 define(["app/map", "app/search", "app/helpers"], function (map, search, helpers) {
-    // map.initialize();
-
-    var resultsObject = helpers.buildResultsObject();
+    map.initialize();
 
     var searchButton = document.querySelector("#submit");
+    var status = document.querySelector("#status");
+    var results = document.querySelector("#results");
+
     searchButton.addEventListener("click", newRequest, false);
     helpers.fixEnterBehaviour(newRequest);
 
-    var status = document.querySelector("#status");
-    var results = document.querySelector("#results");
+    var resultsObject = helpers.buildResultsObject();
+
 
     function newRequest() {
         var query = document.querySelector("#query").value;
