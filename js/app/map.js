@@ -58,7 +58,7 @@ define(["leaflet", "app/districts", "app/search"], function (L, districts, searc
             });
             if (L.Browser.mobile) {
                 layer.on({
-                    contextmenu: highlightFeature,
+                    mousedown: highlightFeature,
                     mouseup: resetHighlight
                 });
             }
