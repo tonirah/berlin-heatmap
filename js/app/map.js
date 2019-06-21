@@ -3,26 +3,26 @@ define(["leaflet", "app/districts"], function (L, districts) {
     function initialize() {
         var mymap = L.map('mapId', {zoomSnap: 0.5}).setView([52.504, 13.411], 10.5);
 
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/light_nolabels/{z}/{x}/{y}{r}.png', {
             maxZoom: 18,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd'
         }).addTo(mymap);
 
-        L.geoJSON(districts.geoJSON, {
+        var districtsLayer = L.geoJSON(districts.geoJSON, {
             style: function (feature) {
                 return {
                     stroke: true,
                     weight: 0.5,
                     color: '#000000',
                     fill:true,
-                    fillColor:'#000000',
-                    fillOpacity:0.3
+                    fillColor:'#0000ff',
+                    fillOpacity:0.3,
+                    dashArray: "3"
                 };
             }
-        }).bindPopup(function (layer) {
-            return JSON.stringify(layer.feature.properties.Gemeinde_name);
         }).addTo(mymap);
+        return districtsLayer;
     }
 
     function calculateRelativeRelevance(resultsObject) {
@@ -45,8 +45,37 @@ define(["leaflet", "app/districts"], function (L, districts) {
         return relativeRelevanceObject;
     }
 
+    function getDistrictColor(d) {
+        // https://leafletjs.com/examples/choropleth/
+        return  d > 0.875 ? '#800026' :
+                d > 0.75 ? '#BD0026' :
+                d > 0.625 ? '#E31A1C' :
+                d > 0.5 ? '#FC4E2A' :
+                d > 0.375 ? '#FD8D3C' :
+                d > 0.25 ? '#FEB24C' :
+                d > 0.125 ? '#FED976' :
+                '#FFEDA0';
+    }
+
+    function colorDistricts(resultsObject, districtsLayer) {
+        var relativeRelevanceObject = calculateRelativeRelevance(resultsObject);
+
+        districtsLayer.eachLayer(function (layer) {
+            var district = layer.feature.properties.Gemeinde_name;
+
+            layer.setStyle({fillColor: "#ff0000"});
+            console.log(layer);
+
+            // layer.setStyle(function (feature) {
+            //     return {
+            //         fillColor: "#ff0000"
+            //     }
+            // });
+        });
+    }
+
     return {
         initialize: initialize,
-        calculateRelativeRelevance: calculateRelativeRelevance
+        colorDistricts: colorDistricts
     }
 });
