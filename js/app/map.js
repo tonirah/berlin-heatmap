@@ -1,6 +1,9 @@
-define(["leaflet", "app/districts"], function (L, districts) {
+define(["leaflet", "app/districts", "app/search"], function (L, districts, search) {
+
+    var districtsLayer;
 
     function initialize() {
+
         var mymap = L.map('mapId', {zoomSnap: 0.5}).setView([52.504, 13.411], 10.5);
 
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/light_nolabels/{z}/{x}/{y}{r}.png', {
@@ -9,20 +12,75 @@ define(["leaflet", "app/districts"], function (L, districts) {
             subdomains: 'abcd'
         }).addTo(mymap);
 
-        var districtsLayer = L.geoJSON(districts.geoJSON, {
+        districtsLayer = L.geoJSON(districts.geoJSON, {
             style: function (feature) {
                 return {
                     stroke: true,
                     weight: 0.5,
-                    color: '#000000',
+                    color: '#666',
                     fill:true,
-                    fillColor:'#0000ff',
-                    fillOpacity:0.3,
+                    fillColor:'#666',
+                    fillOpacity:0.5,
                     dashArray: "3"
                 };
-            }
+            },
+            onEachFeature: onEachFeature
         }).addTo(mymap);
-        return districtsLayer;
+
+        var infoDisplay = L.control();
+
+        // Helping functions for map
+        function highlightFeature(e) {
+            var district = e.target;
+            district.setStyle({
+                weight: 5,
+                dashArray: ''
+            });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                district.bringToFront();
+            }
+            infoDisplay.update(district.feature.properties.Gemeinde_name);
+        }
+
+        function resetHighlight(e) {
+            e.target.setStyle({
+                weight: 0.5,
+                dashArray: "3"
+            });
+            infoDisplay.update();
+        }
+
+        function onEachFeature(feature, layer) {
+            // https://leafletjs.com/examples/choropleth/, adjusted
+            layer.on({
+                mouseover: highlightFeature,
+                mouseout: resetHighlight
+            });
+        }
+
+        infoDisplay.onAdd = function (mymap) {
+            this._div = L.DomUtil.create('div', 'infoDisplay');
+            this.update();
+            return this._div;
+        };
+
+        infoDisplay.update = function (district) {
+            var message = "<h4># of search results</h4>";
+
+            if (!district) {
+                // Nothing
+            } else {
+                message += "<strong>" + district + "</strong>";
+                if (search.resultsObject[district]){
+                    message += "<br>" + search.resultsObject[district] + " estimated results";
+                }
+            }
+
+            this._div.innerHTML = message;
+        };
+
+        // End of: helping functions
+        infoDisplay.addTo(mymap);
     }
 
     function calculateRelativeRelevance(resultsObject) {
@@ -45,8 +103,8 @@ define(["leaflet", "app/districts"], function (L, districts) {
         return relativeRelevanceObject;
     }
 
-    function getDistrictColor(d) {
-        // https://leafletjs.com/examples/choropleth/
+    function getRelevanceColor(d) {
+        // https://leafletjs.com/examples/choropleth/, adjusted
         return  d > 0.875 ? '#800026' :
                 d > 0.75 ? '#BD0026' :
                 d > 0.625 ? '#E31A1C' :
@@ -57,20 +115,11 @@ define(["leaflet", "app/districts"], function (L, districts) {
                 '#FFEDA0';
     }
 
-    function colorDistricts(resultsObject, districtsLayer) {
-        var relativeRelevanceObject = calculateRelativeRelevance(resultsObject);
-
+    function colorDistricts() {
+        var relativeRelevanceObject = calculateRelativeRelevance(search.resultsObject);
         districtsLayer.eachLayer(function (layer) {
             var district = layer.feature.properties.Gemeinde_name;
-
-            layer.setStyle({fillColor: "#ff0000"});
-            console.log(layer);
-
-            // layer.setStyle(function (feature) {
-            //     return {
-            //         fillColor: "#ff0000"
-            //     }
-            // });
+            layer.setStyle({fillColor: getRelevanceColor(relativeRelevanceObject[district])});
         });
     }
 

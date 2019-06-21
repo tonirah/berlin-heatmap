@@ -9,9 +9,22 @@ body {
     flex-direction: column;
 }
 
-/* Map */
+/* MAP */
 #mapId {
     height: 100%;
     width: 100vw;
     background: #eee;
+}
+
+/*Adapted from: https://leafletjs.com/examples/choropleth/*/
+.infoDisplay {
+    padding: 6px 8px;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+.infoDisplay h4 {
+    font-size: 1.5em;
+    color: #777;
 }

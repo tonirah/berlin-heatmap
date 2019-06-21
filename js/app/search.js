@@ -1,5 +1,8 @@
 define(["jquery", "app/helpers", "app/districts"], function ($, helpers, districts) {
 
+    var resultsObject = helpers.buildResultsObject();
+    var responsesObject = helpers.buildResponsesObject();
+
     function encryptKey() {
         // bing api key encrypted with https://www.stringencrypt.com, to prevent lazy developers from stealing it :)
         var key = "\u6500\u31FF\u33FE\u62FD\u61FC\u33FB";
@@ -91,7 +94,7 @@ define(["jquery", "app/helpers", "app/districts"], function ($, helpers, distric
 
         // Bing API allows only 3 requests per ~1 second
         var splittedArray = helpers.chunkArray(districts.arrayForRequests, 3);
-        var time = 1500;
+        var time = 100;
 
         // Weird workaround, since JS doesn't have a sleep function. Source: Somewhere on Stackoverflow.
         for (var i = 0; i < splittedArray.length; i++) {
@@ -119,6 +122,8 @@ define(["jquery", "app/helpers", "app/districts"], function ($, helpers, distric
     }
 
     return {
+        resultsObject: resultsObject,
+        responsesObject: responsesObject,
         arrayQuery: arrayQuery,
         DEVarrayQuery: DEVarrayQuery
     }

@@ -1,16 +1,17 @@
 define(["app/map", "app/search", "app/helpers"], function (map, search, helpers) {
-    var districtsLayer = map.initialize();
 
     var searchButton = document.querySelector("#submit");
     // var status = document.querySelector("#status");
     // var results = document.querySelector("#results");
     // var relativeRelevance = document.querySelector("#relativeRelevance");
 
-    var responsesObject = helpers.buildResponsesObject();
-    var resultsObject = helpers.buildResultsObject();
+    var responsesObject = search.responsesObject;
+    var resultsObject = search.resultsObject;
 
     searchButton.addEventListener("click", newRequest, false);
     helpers.fixEnterBehaviour(newRequest);
+
+    map.initialize();
 
     function newRequest() {
         var query = document.querySelector("#query").value;
@@ -28,8 +29,7 @@ define(["app/map", "app/search", "app/helpers"], function (map, search, helpers)
         promisedResponses.done(function () {
             helpers.fillResultsObject(responsesObject, resultsObject);
 
-            console.log(resultsObject);
-            map.colorDistricts(resultsObject, districtsLayer);
+            map.colorDistricts();
             // results.innerHTML = JSON.stringify(resultsObject, undefined, 2);
             // relativeRelevance.innerHTML = JSON.stringify(relativeRelevanceObject, undefined, 2);
             //
