@@ -62,7 +62,7 @@ define(["jquery", "app/districts"], function ($, districts) {
         $('#searchBar').submit(function (evt) {
             evt.preventDefault();
             newRequest();
-        });
+        }).blur();
     }
 
     return {
