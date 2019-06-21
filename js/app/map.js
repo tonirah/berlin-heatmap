@@ -54,9 +54,8 @@ define(["leaflet", "app/districts", "app/search"], function (L, districts, searc
             // https://leafletjs.com/examples/choropleth/, adjusted
             layer.on({
                 mouseover: highlightFeature,
-                touchstart: highlightFeature,
+                mousedown: highlightFeature,
                 mouseout: resetHighlight,
-                touchend: resetHighlight
             });
         }
 
