@@ -27,6 +27,9 @@ define(["leaflet", "app/districts", "app/search"], function (L, districts, searc
             onEachFeature: onEachFeature
         }).addTo(mymap);
 
+        // Zoom map fit berlin districts to whole screen
+        mymap.fitBounds(districtsLayer.getBounds());
+
         var infoDisplay = L.control();
 
         // Helping functions for map
