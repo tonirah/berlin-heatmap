@@ -94,7 +94,7 @@ define(["jquery", "app/helpers", "app/districts"], function ($, helpers, distric
 
         // Bing API allows only 3 requests per ~1 second
         var splittedArray = helpers.chunkArray(districts.arrayForRequests, 3);
-        var time = 100;
+        var time = 1000;
 
         // Weird workaround, since JS doesn't have a sleep function. Source: Somewhere on Stackoverflow.
         for (var i = 0; i < splittedArray.length; i++) {

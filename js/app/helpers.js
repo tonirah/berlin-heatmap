@@ -65,7 +65,16 @@ define(["jquery", "app/districts"], function ($, districts) {
             // Hide onscreen keyboard after hitting enter
             $('#query').blur();
         });
+    }
 
+    function showLoading() {
+        $("#submit > i").addClass("d-none");
+        $("#submit > span").removeClass("d-none");
+    }
+
+    function hideLoading() {
+        $("#submit > span").addClass("d-none");
+        $("#submit > i").removeClass("d-none");
     }
 
     return {
@@ -73,6 +82,8 @@ define(["jquery", "app/districts"], function ($, districts) {
         buildResponsesObject: buildResponsesObject,
         buildResultsObject: buildResultsObject,
         fillResultsObject: fillResultsObject,
-        fixEnterBehaviour: fixEnterBehaviour
+        fixEnterBehaviour: fixEnterBehaviour,
+        showLoading: showLoading,
+        hideLoading: hideLoading
     }
 });

@@ -132,8 +132,15 @@ define(["leaflet", "app/districts", "app/search"], function (L, districts, searc
         });
     }
 
+    function resetDistrictColors() {
+        districtsLayer.eachLayer(function (district) {
+            districtsLayer.resetStyle(district);
+        });
+    }
+
     return {
         initialize: initialize,
-        colorDistricts: colorDistricts
+        colorDistricts: colorDistricts,
+        resetDistrictColors: resetDistrictColors
     }
 });
