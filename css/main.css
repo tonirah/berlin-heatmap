@@ -19,7 +19,7 @@ body {
     width: 6rem;
     line-height: 0.8;
 }
-@media (min-width: 768px) {
+@media (min-width: 992px) {
     .navbar-brand {margin-right: -6rem;}
 }
 
