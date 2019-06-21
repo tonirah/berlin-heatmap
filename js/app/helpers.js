@@ -62,7 +62,10 @@ define(["jquery", "app/districts"], function ($, districts) {
         $('#searchBar').submit(function (evt) {
             evt.preventDefault();
             newRequest();
-        }).blur();
+            // Hide onscreen keyboard after hitting enter
+            $('#query').blur();
+        });
+
     }
 
     return {
