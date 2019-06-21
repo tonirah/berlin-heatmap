@@ -24,7 +24,7 @@ define(["app/map", "app/search", "app/helpers"], function (map, search, helpers)
         results.innerHTML = "";
         relativeRelevance.innerHTML = "";
 
-        var promisedResponses = search.arrayQuery(query, responsesObject);
+        var promisedResponses = search.DEVarrayQuery(query, responsesObject);
         promisedResponses.done(function () {
             helpers.fillResultsObject(responsesObject, resultsObject);
             var relativeRelevanceObject = map.calculateRelativeRelevance(resultsObject);

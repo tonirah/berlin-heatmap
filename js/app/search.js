@@ -84,7 +84,42 @@ define(["jquery", "app/helpers", "app/districts"], function ($, helpers, distric
         console.log(data);
     }
 
+    function DEVarrayQuery(query, responsesObject) {
+        // Make jQ deferred object (promise), that is resolved when # of responses is equal to number of districts searched for
+        var promisedResults = $.Deferred();
+        var responseCounter = 0;
+
+        // Bing API allows only 3 requests per ~1 second
+        var splittedArray = helpers.chunkArray(districts.arrayForRequests, 3);
+        var time = 1500;
+
+        // Weird workaround, since JS doesn't have a sleep function. Source: Somewhere on Stackoverflow.
+        for (var i = 0; i < splittedArray.length; i++) {
+            (function (i) {
+                setTimeout(function () {
+
+                    // Search query for each district
+                    splittedArray[i].forEach(function (district) {
+                        // RANDOM NUMBER OF RESULTS
+                        responsesObject[district] = Math.floor(Math.random() * Math.floor(1000));
+                        responseCounter++;
+                        console.log(responseCounter);
+
+                        // Resolve promise after last response
+                        if (responseCounter === districts.arrayForRequests.length) {
+                            console.log("ALL REQUESTS DONE!");
+                            promisedResults.resolve();
+                        }
+                    })
+                }, time * i);
+            })(i);
+        }
+
+        return promisedResults.promise();
+    }
+
     return {
-        arrayQuery: arrayQuery
+        arrayQuery: arrayQuery,
+        DEVarrayQuery: DEVarrayQuery
     }
 });
