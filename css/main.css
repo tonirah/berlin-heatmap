@@ -22,6 +22,18 @@ body {
     .navbar-brand {margin-right: -6em;}
 }
 
+#about {
+    text-align: right;
+    width: 100%;
+}
+@media (min-width: 576px) {
+    #about {
+        width: 5em;
+        /*text-align: right;*/
+        line-height: 0.8;
+    }
+}
+
 /* MAP */
 #mapId {
     height: 100%;
