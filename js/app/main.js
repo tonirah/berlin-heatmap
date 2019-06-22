@@ -1,5 +1,7 @@
 define(["app/map", "app/search", "app/helpers"], function (map, search, helpers) {
 
+    var inputField = document.querySelector("#inputField");
+
     var searchButton = document.querySelector("#submit");
     searchButton.addEventListener("click", newRequest, false);
     helpers.sendRequestsWithEnter(newRequest);
@@ -10,12 +12,10 @@ define(["app/map", "app/search", "app/helpers"], function (map, search, helpers)
     map.initialize();
 
     function newRequest() {
-        var query = document.querySelector("#query").value;
+        var query = inputField.value;
 
-        // Process empty request
+        // Don't send empty request
         if (query === "") {
-            // TODO
-            // Alert, "please enter a search term"
             return false;
         }
 
