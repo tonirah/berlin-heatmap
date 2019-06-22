@@ -40,14 +40,14 @@
             .done(function(data) {
                 var numberOfResults;
 
-                if(data.hasOwnProperty('webPages')) {
+                if(data.hasOwnProperty("webPages")) {
                     numberOfResults = data.webPages.totalEstimatedMatches;
                 } else {
                     numberOfResults = 0;
                 }
 
-                $('span').html(numberOfResults);
-                // $('pre').html(JSON.stringify(data, undefined, 2));
+                $("span").html(numberOfResults);
+                // $("pre").html(JSON.stringify(data, undefined, 2));
             })
             .fail(function() {
                 alert("error");

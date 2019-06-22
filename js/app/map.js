@@ -4,42 +4,46 @@ define(["leaflet", "app/districts", "app/search"], function (L, districts, searc
 
     function initialize() {
 
-        var mymap = L.map('mapId', {zoomSnap: 0.5}).setView([52.504, 13.411], 10.5);
+        var myMap = L.map("mapId", {zoomSnap: 0.5}).setView([52.504, 13.411], 10.5);
 
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/light_nolabels/{z}/{x}/{y}{r}.png', {
+        L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/light_nolabels/{z}/{x}/{y}{r}.png", {
             maxZoom: 13,
             minZoom: 9,
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-            subdomains: 'abcd'
-        }).addTo(mymap);
+            attribution: "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors, &copy; Tiles: <a href=\"https://carto.com/attributions\">CARTO</a>, Districts: <a href=\"https://data.technologiestiftung-berlin.de/dataset/bezirksgrenzen\">Technologiestiftung Berlin</a>",
+            subdomains: "abcd"
+        }).addTo(myMap);
 
+        // Initialize districts on map from geoJSON object
         districtsLayer = L.geoJSON(districts.geoJSON, {
             style: function (feature) {
                 return {
                     stroke: true,
                     weight: 0.5,
-                    color: '#666',
+                    color: "#666",
                     fill:true,
-                    fillColor:'#666',
+                    fillColor:"#666",
                     fillOpacity:0.5,
                     dashArray: "3"
                 };
             },
             onEachFeature: onEachFeature
-        }).addTo(mymap);
+        }).addTo(myMap);
 
-        // Zoom map fit berlin districts to whole screen, and limit there
-        mymap.fitBounds(districtsLayer.getBounds());
-        mymap.setMaxBounds(mymap.getBounds());
+        // Zoom map to fit berlin districts to whole screen, and limit there
+        myMap.fitBounds(districtsLayer.getBounds());
+        myMap.setMaxBounds(myMap.getBounds());
 
+        // Initialize info panel for # of results
         var infoDisplay = L.control();
 
-        // Helping functions for map
+
+        // HELPING FUNCTIONS for mouse hovering over districts, adapted from: https://leafletjs.com/examples/choropleth/
+
         function highlightFeature(e) {
             var district = e.target;
             district.setStyle({
                 weight: 5,
-                dashArray: ''
+                dashArray: ""
             });
             if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
                 district.bringToFront();
@@ -69,8 +73,8 @@ define(["leaflet", "app/districts", "app/search"], function (L, districts, searc
             }
         }
 
-        infoDisplay.onAdd = function (mymap) {
-            this._div = L.DomUtil.create('div', 'infoDisplay');
+        infoDisplay.onAdd = function () {
+            this._div = L.DomUtil.create("div", "infoDisplay");
             this.update();
             return this._div;
         };
@@ -90,8 +94,7 @@ define(["leaflet", "app/districts", "app/search"], function (L, districts, searc
             this._div.innerHTML = message;
         };
 
-        // End of: helping functions
-        infoDisplay.addTo(mymap);
+        infoDisplay.addTo(myMap);
     }
 
     function calculateRelativeRelevance(resultsObject) {
@@ -115,19 +118,19 @@ define(["leaflet", "app/districts", "app/search"], function (L, districts, searc
 
     function getRelevanceColor(d) {
         // https://leafletjs.com/examples/choropleth/, adjusted
-        return  d > 0.875 ? '#800026' :
-                d > 0.75 ? '#BD0026' :
-                d > 0.625 ? '#E31A1C' :
-                d > 0.5 ? '#FC4E2A' :
-                d > 0.375 ? '#FD8D3C' :
-                d > 0.25 ? '#FEB24C' :
-                d > 0.125 ? '#FED976' :
-                '#FFEDA0';
+        return  d > 0.875 ? "#800026" :
+                d > 0.75 ? "#BD0026" :
+                d > 0.625 ? "#E31A1C" :
+                d > 0.5 ? "#FC4E2A" :
+                d > 0.375 ? "#FD8D3C" :
+                d > 0.25 ? "#FEB24C" :
+                d > 0.125 ? "#FED976" :
+                "#FFEDA0";
     }
 
     function colorDistricts() {
         var relativeRelevanceObject = calculateRelativeRelevance(search.resultsObject);
-        console.log("relativeRelevanceObject: ")
+        console.log("relativeRelevanceObject: ");
         console.log(relativeRelevanceObject);
         districtsLayer.eachLayer(function (layer) {
             var district = layer.feature.properties.Gemeinde_name;

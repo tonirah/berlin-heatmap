@@ -1,4 +1,4 @@
-define(["jquery", "app/districts"], function ($, districts) {
+define(["jquery"], function ($) {
 
     // https://ourcodeworld.com/articles/read/278/how-to-split-an-array-into-chunks-of-the-same-size-easily-in-javascript
     function chunkArray(myArray, chunk_size){
@@ -14,22 +14,12 @@ define(["jquery", "app/districts"], function ($, districts) {
         return tempArray;
     }
 
-    function buildResponsesObject() {
-        var arrayForRequests = districts.arrayForRequests;
-        var responsesObject = {};
-        for (var i = 0; i < arrayForRequests.length; i++) {
-            responsesObject[arrayForRequests[i]] = null;
+    function buildObjectFromArray(array) {
+        var object = {};
+        for (var i = 0; i < array.length; i++) {
+            object[array[i]] = null;
         }
-        return responsesObject;
-    }
-
-    function buildResultsObject() {
-        var arrayOfDistricts = districts.arrayOfDistricts;
-        var resultsObject = {};
-        for (var i = 0; i < arrayOfDistricts.length; i++) {
-            resultsObject[arrayOfDistricts[i]] = null;
-        }
-        return resultsObject;
+        return object;
     }
 
     function fillResultsObject(responsesObject, resultsObject) {
@@ -38,8 +28,12 @@ define(["jquery", "app/districts"], function ($, districts) {
         // Workaround: Get two numbers, make average
 
         for (var district in resultsObject) {
+            // Mitte is special
+            if (district === "Berlin-Mitte") {
+                resultsObject[district] = responsesObject[district];
+            }
             // Identify double district (-)
-            if (district.indexOf("-") !== -1) {
+            else if (district.indexOf("-") !== -1) {
                 // Split string into two districts
                 var twoDistricts = district.split("-");
                 // Get two numbers, make average, write to resultsObject
@@ -50,20 +44,16 @@ define(["jquery", "app/districts"], function ($, districts) {
                 // Single-districts
                 resultsObject[district] = responsesObject[district];
             }
-            // Mitte is special
-            if (district === "Berlin-Mitte") {
-                resultsObject[district] = responsesObject[district];
-            }
         }
         return resultsObject;
     }
 
-    function fixEnterBehaviour(newRequest) {
-        $('#searchBar').submit(function (evt) {
+    function sendRequestsWithEnter(newRequest) {
+        $("#searchBar").submit(function (evt) {
             evt.preventDefault();
             newRequest();
             // Hide onscreen keyboard after hitting enter
-            $('#query').blur();
+            $("#query").blur();
         });
     }
 
@@ -79,10 +69,9 @@ define(["jquery", "app/districts"], function ($, districts) {
 
     return {
         chunkArray: chunkArray,
-        buildResponsesObject: buildResponsesObject,
-        buildResultsObject: buildResultsObject,
+        buildObjectFromArray: buildObjectFromArray,
         fillResultsObject: fillResultsObject,
-        fixEnterBehaviour: fixEnterBehaviour,
+        sendRequestsWithEnter: sendRequestsWithEnter,
         showLoading: showLoading,
         hideLoading: hideLoading
     }

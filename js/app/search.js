@@ -1,7 +1,7 @@
 define(["jquery", "app/helpers", "app/districts"], function ($, helpers, districts) {
 
-    var resultsObject = helpers.buildResultsObject();
-    var responsesObject = helpers.buildResponsesObject();
+    var resultsObject = helpers.buildObjectFromArray(districts.arrayOfDistricts);
+    var responsesObject = helpers.buildObjectFromArray(districts.arrayForRequests);
 
     function encryptKey() {
         // bing api key encrypted with https://www.stringencrypt.com, to prevent lazy developers from stealing it :)
@@ -18,14 +18,17 @@ define(["jquery", "app/helpers", "app/districts"], function ($, helpers, distric
     }
 
     function simpleQuery(query, district) {
+        // Modified from: https://dev.cognitive.microsoft.com/docs/services/f40197291cd14401b93a478716e818bf/operations/56b4447dcf5ff8098cef380d
         var key = encryptKey();
         var jointQuery = query + " " + district;
-        // Modified from: https://dev.cognitive.microsoft.com/docs/services/f40197291cd14401b93a478716e818bf/operations/56b4447dcf5ff8098cef380d
+
+        // Request parameters
         var params = {
-            // Request parameters
             "q": jointQuery,
             "mkt": "de_DE"
         };
+
+        // Return jQuery promise, to continue once data arrived
         return $.ajax({
             url: "https://api.cognitive.microsoft.com/bing/v7.0/search?" + $.param(params),
             beforeSend: function(xhrObj){
@@ -33,21 +36,21 @@ define(["jquery", "app/helpers", "app/districts"], function ($, helpers, distric
                 xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", key);
             },
             type: "GET",
-            // Request body
+            // Request body of response
             data: "{body}"
         });
     }
 
-    function arrayQuery(query, responsesObject) {
+    function searchWithAllDistricts(query, responsesObject) {
         // Make jQ deferred object (promise), that is resolved when # of responses is equal to number of districts searched for
         var promisedResults = $.Deferred();
         var responseCounter = 0;
 
-        // Bing API allows only 3 requests per ~1 second
+        // Free Bing API allows only 3 requests per ~1 second
         var splittedArray = helpers.chunkArray(districts.arrayForRequests, 3);
         var time = 1500;
 
-        // Weird workaround, since JS doesn't have a sleep function. Source: Somewhere on Stackoverflow.
+        // Weird workaround, since JS doesn't have a sleep function. https://stackoverflow.com/a/30865841.
         for (var i = 0; i < splittedArray.length; i++) {
             (function (i) {
                 setTimeout(function () {
@@ -55,6 +58,8 @@ define(["jquery", "app/helpers", "app/districts"], function ($, helpers, distric
                     // Search query for each district
                     splittedArray[i].forEach(function (district) {
                         simpleQuery(query, district).done(function (data) {
+
+                            // Async section, executed when a result returns
                             handleAPIResponse(data, district, responsesObject);
                             responseCounter++;
                             console.log(responseCounter);
@@ -69,10 +74,12 @@ define(["jquery", "app/helpers", "app/districts"], function ($, helpers, distric
                 }, time * i);
             })(i);
         }
+
+        // Return promise immediately, gets resolved after last response
         return promisedResults.promise();
     }
 
-    function DEVarrayQuery(query, responsesObject) {
+    function DEVsearchWithAllDistricts(query, responsesObject) {
         // Make jQ deferred object (promise), that is resolved when # of responses is equal to number of districts searched for
         var promisedResults = $.Deferred();
         var responseCounter = 0;
@@ -106,22 +113,22 @@ define(["jquery", "app/helpers", "app/districts"], function ($, helpers, distric
     }
 
     function handleAPIResponse(data, district, resultsObject) {
-        var numberOfResults;
 
-        if(data.hasOwnProperty('webPages')) {
+        console.log(data);
+
+        var numberOfResults;
+        if(data.hasOwnProperty("webPages")) {
             numberOfResults = data.webPages.totalEstimatedMatches;
         } else {
             numberOfResults = 0
         }
         resultsObject[district] = numberOfResults;
-
-        console.log(data);
     }
 
     return {
         resultsObject: resultsObject,
         responsesObject: responsesObject,
-        arrayQuery: arrayQuery,
-        DEVarrayQuery: DEVarrayQuery
+        searchWithAllDistricts: searchWithAllDistricts,
+        DEVsearchWithAllDistricts: DEVsearchWithAllDistricts
     }
 });

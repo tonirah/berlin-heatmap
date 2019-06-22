@@ -13,18 +13,13 @@ body {
 /*STYLING*/
 .navbar-brand {
     font-weight: bold;
-    /*font-size: 0.95em;*/
     text-decoration: underline;
     text-decoration-color: lightcoral;
-    width: 6rem;
+    width: 6em;
     line-height: 0.8;
 }
 @media (min-width: 992px) {
-    .navbar-brand {margin-right: -6rem;}
-}
-
-#searchBar {
-    /*margin-right: 6rem;*/
+    .navbar-brand {margin-right: -6em;}
 }
 
 /* MAP */
