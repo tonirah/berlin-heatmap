@@ -69,22 +69,7 @@ define(["jquery", "app/helpers", "app/districts"], function ($, helpers, distric
                 }, time * i);
             })(i);
         }
-
         return promisedResults.promise();
-
-    }
-
-    function handleAPIResponse(data, district, resultsObject) {
-        var numberOfResults;
-
-        if(data.hasOwnProperty('webPages')) {
-            numberOfResults = data.webPages.totalEstimatedMatches;
-        } else {
-            numberOfResults = 0
-        }
-        resultsObject[district] = numberOfResults;
-
-        console.log(data);
     }
 
     function DEVarrayQuery(query, responsesObject) {
@@ -117,8 +102,20 @@ define(["jquery", "app/helpers", "app/districts"], function ($, helpers, distric
                 }, time * i);
             })(i);
         }
-
         return promisedResults.promise();
+    }
+
+    function handleAPIResponse(data, district, resultsObject) {
+        var numberOfResults;
+
+        if(data.hasOwnProperty('webPages')) {
+            numberOfResults = data.webPages.totalEstimatedMatches;
+        } else {
+            numberOfResults = 0
+        }
+        resultsObject[district] = numberOfResults;
+
+        console.log(data);
     }
 
     return {

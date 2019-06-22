@@ -24,7 +24,7 @@ define(["app/map", "app/search", "app/helpers"], function (map, search, helpers)
         helpers.showLoading();
 
 
-        var promisedResponses = search.DEVarrayQuery(query, responsesObject);
+        var promisedResponses = search.arrayQuery(query, responsesObject);
         promisedResponses.done(function () {
             helpers.fillResultsObject(responsesObject, resultsObject);
 
