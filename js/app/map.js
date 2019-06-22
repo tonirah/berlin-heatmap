@@ -8,7 +8,7 @@ define(["leaflet", "app/districts", "app/search"], function (L, districts, searc
 
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/light_nolabels/{z}/{x}/{y}{r}.png', {
             maxZoom: 13,
-            minZoom: 10,
+            minZoom: 9,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd'
         }).addTo(mymap);
