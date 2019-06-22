@@ -110,7 +110,6 @@ define(["leaflet", "app/districts", "app/search"], function (L, districts, searc
             var number = (resultsObject[district] - min) / span;
             relativeRelevanceObject[district] = parseFloat(number.toFixed(2));
         }
-
         return relativeRelevanceObject;
     }
 
@@ -128,6 +127,8 @@ define(["leaflet", "app/districts", "app/search"], function (L, districts, searc
 
     function colorDistricts() {
         var relativeRelevanceObject = calculateRelativeRelevance(search.resultsObject);
+        console.log("relativeRelevanceObject: ")
+        console.log(relativeRelevanceObject);
         districtsLayer.eachLayer(function (layer) {
             var district = layer.feature.properties.Gemeinde_name;
             layer.setStyle({fillColor: getRelevanceColor(relativeRelevanceObject[district])});

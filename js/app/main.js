@@ -23,11 +23,13 @@ define(["app/map", "app/search", "app/helpers"], function (map, search, helpers)
         map.resetDistrictColors();
         helpers.showLoading();
 
-
+        console.log("query: " + query);
         var promisedResponses = search.arrayQuery(query, responsesObject);
         promisedResponses.done(function () {
             helpers.fillResultsObject(responsesObject, resultsObject);
 
+            console.log("resultsObject:");
+            console.log(resultsObject);
             map.colorDistricts();
             helpers.hideLoading();
         });
