@@ -7,7 +7,8 @@ define(["leaflet", "app/districts", "app/search"], function (L, districts, searc
         var mymap = L.map('mapId', {zoomSnap: 0.5}).setView([52.504, 13.411], 10.5);
 
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/light_nolabels/{z}/{x}/{y}{r}.png', {
-            maxZoom: 12,
+            maxZoom: 13,
+            minZoom: 10,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd'
         }).addTo(mymap);
@@ -27,8 +28,9 @@ define(["leaflet", "app/districts", "app/search"], function (L, districts, searc
             onEachFeature: onEachFeature
         }).addTo(mymap);
 
-        // Zoom map fit berlin districts to whole screen
+        // Zoom map fit berlin districts to whole screen, and limit there
         mymap.fitBounds(districtsLayer.getBounds());
+        mymap.setMaxBounds(mymap.getBounds());
 
         var infoDisplay = L.control();
 
