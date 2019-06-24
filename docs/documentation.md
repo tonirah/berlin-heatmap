@@ -17,7 +17,7 @@ The following documentation is structured as follows:
 4. Technical documentation  
   4.1 Research and planning  
   4.2 Frameworks and dependencies  
-  4.3 Project structure
+  4.3 Project structure  
   4.4 Search module  
   4.5 Map module  
     
